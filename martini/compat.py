@@ -24,6 +24,7 @@ cmp = lambda x, y: (x > y) - (x < y)
 # Version specific import and corrections
 py_version = sys.version_info
 if py_version[0] == 2:  # Major version
+    # Require Python >2.7
     if py_version[1] < 7:  # Minor version
         raise EnvironmentError("Your Python version is too low, please upgrade.")
     else:
@@ -31,7 +32,12 @@ if py_version[0] == 2:  # Major version
         from future_builtins import *
         input = raw_input
         file = open
+
         def apply(func, args=(), kwargs={}):
+            """
+            A function to discourage people from using apply.
+            """
             raise NameError("name 'apply' is not defined")
+# Require Python >3.4
 elif py_version[0] == 3 and py_version[1] < 4:
     raise EnvironmentError("Your Python version is too low, please upgrade.")
