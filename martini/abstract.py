@@ -21,6 +21,13 @@ class ABC(with_metaclass(abc.ABCMeta, object)):
 class Structure(ABC):
     """
     Represents the conformation/structure of one or more molecules.
+    
+    Attributes
+    ----------
+    atoms : set/list/tuple/frozenset
+        A collection of all atoms in this structure.
+    residues : set/list/tuple/frozenset
+        A collection of all residues (or molecules) in this structure.
     """
     @abc.abstractproperty
     def atoms(self):
@@ -42,14 +49,35 @@ class Trajectory(ABC):
     """
     @abc.abstractmethod
     def __iter__(self):
+        """
+        Yields
+        ------
+        Structure
+        """
         raise NotImplementedError
 
     @abc.abstractmethod
     def __len__(self):
+        """
+        Returns
+        -------
+        length : int
+            The number of frames in this trajectory.
+        """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def __getitem__(self, key):
+    def __getitem__(self, index):
+        """
+        Parameters
+        ----------
+        index : int
+
+        Returns
+        -------
+        Structure
+            The frame at index `index`
+        """
         raise NotImplementedError
 
     def __eq__(self, other):
@@ -59,6 +87,15 @@ class Trajectory(ABC):
 class Atom(ABC):
     """
     Represents an atom.
+    
+    Attributes
+    ----------
+    atom_type : AtomType
+        The type of this atom.
+    charge : float
+        The charge of this atom.
+    mass : float
+        The mass of this atom.
     """
     @abc.abstractproperty
     def atom_type(self):
@@ -82,6 +119,15 @@ class Atom(ABC):
 class AtomType(ABC):
     """
     Represents an atom type.
+    
+    Attributes
+    ----------
+    name : str
+        The name of this atom type.
+    charge : float
+        The default charge for atoms of this type.
+    mass : float
+        The default mass for atoms of this type.
     """
     @abc.abstractproperty
     def name(self):
