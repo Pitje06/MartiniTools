@@ -19,16 +19,27 @@ class ABC(with_metaclass(abc.ABCMeta, object)):
 # You do NOT need to inherit from these classes to be it's subclass.
 # All you need to do is implement all it's abstract methods.
 class Structure(ABC):
+    """
+    Represents the conformation/structure of one or more molecules.
+    """
     @abc.abstractproperty
     def atoms(self):
+        raise NotImplementedError
         return None
 
     @abc.abstractproperty
     def residues(self):
+        raise NotImplementedError
         return []
+
+    def __eq__(self, other):
+        return id(self) == id(other)
 
 
 class Trajectory(ABC):
+    """
+    Represents a time-series of Structures.
+    """
     @abc.abstractmethod
     def __iter__(self):
         raise NotImplementedError
@@ -41,8 +52,14 @@ class Trajectory(ABC):
     def __getitem__(self, key):
         raise NotImplementedError
 
+    def __eq__(self, other):
+        return id(self) == id(other)
+
 
 class Atom(ABC):
+    """
+    Represents an atom.
+    """
     @abc.abstractproperty
     def atom_type(self):
         raise NotImplementedError
@@ -58,8 +75,14 @@ class Atom(ABC):
         raise NotImplementedError
         return self.atom_type.mass
 
+    def __eq__(self, other):
+        return id(self) == id(other)
+
 
 class AtomType(ABC):
+    """
+    Represents an atom type.
+    """
     @abc.abstractproperty
     def name(self):
         raise NotImplementedError
@@ -74,6 +97,9 @@ class AtomType(ABC):
     def mass(self):
         raise NotImplementedError
         return 0
+
+    def __eq__(self, other):
+        return id(self) == id(other)
 
     def __str__(self):
         return self.name
