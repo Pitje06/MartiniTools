@@ -4,6 +4,8 @@ An import and namespace 'manager' to facilitate
 Python 2/3 compatibility.
 Usage: from compat import *
 """
+# pylint: disable=redefined-builtin, wildcard-import, unused-import, import-error
+
 from __future__ import print_function, division
 from __future__ import absolute_import, unicode_literals
 
@@ -30,10 +32,10 @@ if py_version[0] == 2:  # Major version
     else:
         logging.warn("You are running Python 2, but this is deprecated and may stop working...")
         from future_builtins import *
-        input = raw_input
+        input = raw_input  # pylint: disable=undefined-variable
         file = open
 
-        def apply(func, args=(), kwargs={}):
+        def apply(func, args=(), kwargs={}):  # pylint: disable=unused-argument, dangerous-default-value
             """
             A function to discourage people from using apply.
             """

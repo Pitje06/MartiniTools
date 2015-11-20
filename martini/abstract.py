@@ -2,7 +2,8 @@
 """
 Provides abstract base classes for future use.
 """
-from .compat import *
+# pylint: disable=abstract-class-instantiated
+from .compat import *  # pylint: disable=wildcard-import, redefined-builtin
 import abc
 
 
@@ -10,9 +11,10 @@ class ABC(with_metaclass(abc.ABCMeta, object)):
     """
     Analogous to python 3's abc.ABC
     """
+    # pylint: disable=too-few-public-methods
     @classmethod
     def __subclasshook__(cls, C):
-        return all(any(hasattr(B, attr) for B in C.__mro__)
+        return all(any(hasattr(cls_b, attr) for cls_b in C.__mro__)
                    for attr in cls.__abstractmethods__)
 
 
@@ -21,7 +23,7 @@ class ABC(with_metaclass(abc.ABCMeta, object)):
 class Structure(ABC):
     """
     Represents the conformation/structure of one or more molecules.
-    
+
     Attributes
     ----------
     atoms : set/list/tuple/frozenset
@@ -29,15 +31,43 @@ class Structure(ABC):
     residues : set/list/tuple/frozenset
         A collection of all residues (or molecules) in this structure.
     """
+    @classmethod
+    @abc.abstractmethod
+    def from_file(cls, filename):
+        """
+        Parameters
+        ==========
+        filename : str
+            A filename to read.
+        Returns
+        =======
+        structure : Structure
+        """
+        raise NotImplementedError
+
+    @classmethod
+    @abc.abstractmethod
+    def from_text(cls, text):
+        """
+        Mainly intended for testing purposes.
+
+        Parameters
+        ==========
+        text : str
+            The text from which to construct a structure
+        Returns
+        =======
+        structure : Structure
+        """
+        raise NotImplementedError
+
     @abc.abstractproperty
     def atoms(self):
         raise NotImplementedError
-        return None
 
     @abc.abstractproperty
     def residues(self):
         raise NotImplementedError
-        return []
 
     def __eq__(self, other):
         return id(self) == id(other)
@@ -87,7 +117,7 @@ class Trajectory(ABC):
 class Atom(ABC):
     """
     Represents an atom.
-    
+
     Attributes
     ----------
     atom_type : AtomType
@@ -97,20 +127,27 @@ class Atom(ABC):
     mass : float
         The mass of this atom.
     """
+    def __init__(self, mass=None, charge=None):
+        self.__mass = mass
+        self.__charge = charge
+
     @abc.abstractproperty
     def atom_type(self):
         raise NotImplementedError
-        return None
 
     @abc.abstractproperty
     def charge(self):
-        raise NotImplementedError
-        return self.atom_type.charge
+        if self.__charge is not None:
+            return self.__charge
+        else:
+            return self.atom_type.charge
 
     @abc.abstractproperty
     def mass(self):
-        raise NotImplementedError
-        return self.atom_type.mass
+        if self.__mass is not None:
+            return self.__mass
+        else:
+            return self.atom_type.mass
 
     def __eq__(self, other):
         return id(self) == id(other)
@@ -119,7 +156,7 @@ class Atom(ABC):
 class AtomType(ABC):
     """
     Represents an atom type.
-    
+
     Attributes
     ----------
     name : str
@@ -132,16 +169,13 @@ class AtomType(ABC):
     @abc.abstractproperty
     def name(self):
         raise NotImplementedError
-        return ''
 
     @abc.abstractproperty
     def charge(self):
-        raise NotImplementedError
         return 0
 
     @abc.abstractproperty
     def mass(self):
-        raise NotImplementedError
         return 0
 
     def __eq__(self, other):
