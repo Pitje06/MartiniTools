@@ -20,7 +20,7 @@ class ABC(with_metaclass(abc.ABCMeta, object)):
 
 # You do NOT need to inherit from these classes to be it's subclass.
 # All you need to do is implement all it's abstract methods.
-class Structure(ABC):
+class AbstractStructure(ABC):
     """
     Represents the conformation/structure of one or more molecules.
 
@@ -73,7 +73,7 @@ class Structure(ABC):
         return id(self) == id(other)
 
 
-class Trajectory(ABC):
+class AbstractTrajectory(ABC):
     """
     Represents a time-series of Structures.
     """
@@ -114,7 +114,7 @@ class Trajectory(ABC):
         return id(self) == id(other)
 
 
-class Atom(ABC):
+class AbstractAtom(ABC):
     """
     Represents an atom.
 
@@ -153,7 +153,7 @@ class Atom(ABC):
         return id(self) == id(other)
 
 
-class AtomType(ABC):
+class AbstractAtomType(ABC):
     """
     Represents an atom type.
 
